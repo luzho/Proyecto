@@ -9,7 +9,7 @@ var users		= require('./Routes/users');
 var tasks		= require('./Routes/tasks');
 var app			= express();
 
-
+app.use(express.static(__dirname = "public")); //Linea agregada para ver el HTML
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function(req, res, next) {

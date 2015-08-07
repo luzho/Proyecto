@@ -102,8 +102,8 @@ module.exports = function(app){
 		});
 	});
 
-	app.delete("/users",function(req,res){
-		var id = req.param('id');
+	app.delete("/users/:id",function(req,res){
+		var id = req.params.id;
 		UserModel.deleteUser(id,function(error,data)
 		{
 			if (data && data.msg === "deleted" || data.msg === "notExist") {
