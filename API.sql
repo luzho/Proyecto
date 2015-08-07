@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS users (
+	id			INT(11) NOT NULL AUTO_INCREMENT,
+	name		VARCHAR(255) NOT NULL,
+	lastname	VARCHAR(255) NOT NULL,
+	email		VARCHAR(255) NOT NULL,
+	password	VARCHAR(255) NOT NULL,
+	PRIMARY KEY (id)
+);
+ALTER TABLE users AUTO_INCREMENT=0;
+
+CREATE TABLE IF NOT EXISTS tasks (
+	id				INT(20) NOT NULL AUTO_INCREMENT,
+	users_id		INT(11) NOT NULL,
+	description		VARCHAR(255) NOT NULL,
+	date_create		DATE,
+	date_planned	DATE,
+	type			INT(1),
+	PRIMARY KEY (id),
+	KEY fk_users1_idx (users_id)
+);
+ALTER TABLE tasks AUTO_INCREMENT=0;
+  
+ALTER TABLE tasks
+  ADD CONSTRAINT fk_users1 FOREIGN KEY (users_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
