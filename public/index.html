@@ -1,61 +1,32 @@
 <!DOCTYPE html>
-<html ng-app='MyApp'>
+<html ng-app='LoginApp'>
 <head>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	<title>Our App</title>
+	<title>Login</title>
 </head>
 <body>
-	<div class="container" ng-controller="AppCtrl">
-		<div class="row User" style="{{style_1}}">
-			<h1>Our App</h1>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Lastname</th>
-						<th>Email</th>
-						<th>Password</th>
-						<th>Action</th>
-						<th>&nbsp;</th>
-						<th>&nbsp;</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr >
-						<td><input class="form-control" ng-model="user.name"></td>
-						<td><input class="form-control" ng-model="user.lastname"></td>
-						<td><input class="form-control" ng-model="user.email"></td>
-						<td><input class="form-control" ng-model="user.password"></td>
-						<td><button class="btn btn-primary" ng-click="addUser()">Add User</button></td>
-						<td><button class="btn btn-info" ng-click="update()">update</button></td>
-						<td><button class="btn btn-info" ng-click="deselect()">Clear</button></td>
-					</tr>
-					<tr ng-repeat="user in users">
-						<td>{{user.name}}</td>
-						<td>{{user.lastname}}</td>
-						<td>{{user.email}}</td>
-						<td>{{user.password}}</td>
-						<td><button class="btn btn-danger" ng-click="remove(user.id)">Remove</button></td>
-						<td><button class="btn btn-warning" ng-click="edit(user.id)">Edit</button></td>
-						<td>&nbsp;</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="row login" style="{{style_2}}">
+	<div class="container" ng-controller="LoginCtrl">
+		<div class="row login" >
+		<hr>
 			<h1><span class="fa fa-sign-in"></span> Login</h1>
 		        <div class="form-group">
 		            <label>Email</label>
-		            <input type="email" class="form-control" ng-model="login.email">
+		            <input type="email" class="form-control" ng-model="login.email" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" required style="width:300px">
 		        </div>
 		        <div class="form-group">
 		            <label>Password</label>
-		            <input type="password" class="form-control" ng-model="login.password">
+		            <input type="password" class="form-control" ng-model="login.password" size="30" style="width:300px">
 		        </div>
-		        <button class="btn btn-warning btn-lg" ng-click="login(login.email)">Login</button>
+		        <div class="form-group">
+			        <button class="btn btn-warning btn-lg" ng-click="login(login.email)">Login</button>
+			        &nbsp;&nbsp;
+			    	<button class="btn btn-warning btn-lg" ng-click="signup()">Sign Up</button>
+		    	</div>
 		    <hr>
-		    <p>Need an account? <a href="#">Signup</a></p>
+		    <div class="row">
+				<div class="form-group col-xs-4" ng-bind-html="message"></div><br>
+			</div>
 		</div>
 	</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>	

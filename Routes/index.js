@@ -1,16 +1,11 @@
 var UserModel = require('../Models/User');
-<<<<<<< HEAD
 var passwordHash = require('password-hash');
-
-module.exports = function(app){
-
-	//Route for update user
-	app.get("/user/update/:id",function(req,res){
-=======
+var bcrypt = require('bcryptjs');
+var salt = bcrypt.genSaltSync(10);
 var TaskModel = require('../Models/Task');
 
 module.exports = function(app){
-	
+
 	//Route for all task
 	app.get("/tasks",function(req,res){
 		TaskModel.getTasks(function(error,data){
@@ -20,7 +15,7 @@ module.exports = function(app){
 
 	//Route to find task by id
 	app.get("/tasks/:id",function(req,res){
->>>>>>> origin/master
+//>>>>>>> origin/master
 		var id = req.params.id;
 		if (!isNaN(id)) 
 		{
@@ -41,8 +36,9 @@ module.exports = function(app){
 	});
 
 	//Route to find Tasks by user_id
-	app.get("/tasks/:users_id",function(req,res){
+	app.get("/tasks/users/:users_id",function(req,res){
 		var users_id = req.params.users_id;
+		console.log(users_id);
 		if (!isNaN(users_id)) 
 		{
 			TaskModel.getUTasks(users_id,function(error,data){
@@ -63,17 +59,18 @@ module.exports = function(app){
 	});
 
 	//Create Task
-	app.post("/tasks/users_id",function(req,res){
+	app.post("/tasks/:users_id",function(req,res){
 		var taskData =
 		{
 			id : null,
-			users_id = req.params.users_id,
-			description = req.body.description,
-			date_create = req.body.date_create,
-			date_planned = req.body.date_planned,
-			type = req.body.type
+			users_id : req.params.users_id,
+			description : req.body.description,
+			date_create : req.body.date_create,
+			date_planned : req.body.date_planned,
+			type : req.body.type
 		};
-		TaskModel.insetTask(taskData,function(error,data){
+		console.log(taskData);
+		TaskModel.insertTask(taskData,function(error,data){
 			if (data && data.insertId) {
 				res.redirect("/tasks/" + data.insertId);
 			}
@@ -88,9 +85,11 @@ module.exports = function(app){
 		var taskData = {id:req.param('id'),
 						users_id:req.param('users_id'),
 						description:req.param('description'),
+						date_create:req.param('date_create'),
 						date_planned:req.param('date_planned'),
 						type:req.param('type')
 		};
+		console.log(taskData);
 		TaskModel.updateTask(taskData,function(error,data)
 		{
 			if(data&&data.msg){
@@ -121,8 +120,8 @@ module.exports = function(app){
 	//Route for user by email and password
 	app.post("/users/login",function(req,res){
 		var userData = {
-			email = req.body.email,
-			password = req.body.password
+			email : req.body.email,
+			password : bcrypt.hashSync(req.body.password, salt)
 		};
 		UserModel.getUserByEmail(userData,function(error,data)
 		{
@@ -171,7 +170,7 @@ module.exports = function(app){
 			name : req.body.name,
 			lastname : req.body.lastname,
 			email : req.body.email,
-			password : passwordHash.generate(req.body.password)
+			password : bcrypt.hashSync(req.body.password, salt)
 		};
 		UserModel.insertUser(userData,function(error,data){
 			if (data && data.insertId) {

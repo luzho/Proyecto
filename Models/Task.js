@@ -31,7 +31,7 @@ taskModel.getTasks = function(callback)
 //Get Task by users_id
 taskModel.getUTasks = function(id,callback)
 {
-	if (c) 
+	if (connection) 
 	{
 		var sql = 'SELECT * FROM tasks WHERE users_id = ' + connection.escape(id);
 		connection.query(sql, function(error, row)
@@ -95,10 +95,11 @@ taskModel.updateTask = function(taskData, callback)
 	//console.log(userData); return;
 	if(connection)
 	{
-		var sql = 'UPDATE tasks SET description = ' + connection.escape(taskData.description) + ',' +  
+		var sql = 'UPDATE tasks SET description = ' + connection.escape(taskData.description) + ',' + 
+		'date_create = ' + connection.escape(taskData.date_create) + ',' +
 		'date_planned = ' + connection.escape(taskData.date_planned) + ',type = ' + connection.escape(taskData.type) +
-		'WHERE id = ' + taskData.id;
-		 
+		' WHERE id = ' + taskData.id;
+		 console.log(sql);
 		connection.query(sql, function(error, result)
 		{
 			if(error)

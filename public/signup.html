@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app='SignApp'>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<title>Signup</title>
+</head>
+<body>
+	<div class="container" ng-controller="SignCtrl">
+		<div class="row sign" >
+		<hr>
+			<h1><span class="fa fa-sign-in"></span> Signup</h1>
+				<div class="row">
+					<div class="form-group col-xs-4" ng-bind-html="message"></div><br>
+				</div>
+				<div class="form-group">
+		            <label>Name</label>
+		            <input type="text" class="form-control" ng-model="sign.name" size="30" style="width:300px">
+		        </div>
+		        <div class="form-group">
+		            <label>Lastname</label>
+		            <input type="text" class="form-control" ng-model="sign.lastname" size="30" style="width:300px">
+		        </div>
+		        <div class="form-group">
+		            <label>Email</label>
+		            <input type="email" class="form-control" ng-model="sign.email" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" required style="width:300px">
+		        </div>
+		        <div class="form-group">
+		            <label>Password</label>
+		            <input type="password" class="form-control" ng-model="sign.password" size="30" style="width:300px">
+		        </div>
+		        <div class="form-group">
+			        <button class="btn btn-warning btn-lg" ng-click="signup()">Sign Up</button>
+			        &nbsp;&nbsp;
+			    	<button class="btn btn-warning btn-lg" ng-click="login()">Go Back to Login</button>
+		    	</div>
+		    <hr>
+		</div>
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>	
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.min.js"></script>
+<script src="controller.js" ></script>
+</body>
+</html>
