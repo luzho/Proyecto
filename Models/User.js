@@ -10,6 +10,26 @@ connection = mysql.createConnection(
 
 var userModel = {};
 
+//Get user by email and password
+userModel.getUserByEmail = function(userData,callback)
+{
+	if (connection)
+	{
+		var sql = 'SELECT * FROM users WHERE email = ' + connection.escape(userData.email) + 'and password = ' + connection.escape(userData.password);
+		connection.query(sql, function(error, row)
+		{
+			if(error)
+			{
+				throw error;
+			}
+			else
+			{
+				callback(null, row);
+			}
+		});
+	}
+}
+
 //Get ALL users
 userModel.getUsers = function(callback)
 {
