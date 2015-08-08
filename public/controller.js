@@ -66,7 +66,6 @@ loginApp.controller('LoginCtrl',['$sce','$window','$scope','$http',function ($sc
 				$window.location = "task.html";
 			});
 		}else{
-			//alert('Error logging data, please try again.');
 			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> logging data, please try again.</div>');
 		}
 	};
