@@ -1,7 +1,8 @@
 var UserModel = require('../Models/User');
+var passwordHash = require('password-hash');
 
 module.exports = function(app){
-	
+
 	//Route for update user
 	app.get("/user/update/:id",function(req,res){
 		var id = req.params.id;
@@ -71,7 +72,7 @@ module.exports = function(app){
 			name : req.body.name,
 			lastname : req.body.lastname,
 			email : req.body.email,
-			password : req.body.password
+			password : passwordHash.generate(req.body.password)
 		};
 		UserModel.insertUser(userData,function(error,data){
 			if (data && data.insertId) {

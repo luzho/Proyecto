@@ -7,42 +7,60 @@
 </head>
 <body>
 	<div class="container" ng-controller="AppCtrl">
-		<h1>Our App</h1>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Lastname</th>
-					<th>Email</th>
-					<th>Password</th>
-					<th>Action</th>
-					<th>&nbsp;</th>
-					<th>&nbsp;</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr >
-					<td><input class="form-control" ng-model="user.name"></td>
-					<td><input class="form-control" ng-model="user.lastname"></td>
-					<td><input class="form-control" ng-model="user.email"></td>
-					<td><input class="form-control" ng-model="user.password"></td>
-					<td><button class="btn btn-primary" ng-click="addUser()">Add User</button></td>
-					<td><button class="btn btn-info" ng-click="update()">update</button></td>
-					<td><button class="btn btn-info" ng-click="deselect()">Clear</button></td>
-				</tr>
-				<tr ng-repeat="user in users">
-					<td>{{user.name}}</td>
-					<td>{{user.lastname}}</td>
-					<td>{{user.email}}</td>
-					<td>{{user.password}}</td>
-					<td><button class="btn btn-danger" ng-click="remove(user.id)">Remove</button></td>
-					<td><button class="btn btn-warning" ng-click="edit(user.id)">Edit</button></td>
-					<td>&nbsp;</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="row User" style="{{style_1}}">
+			<h1>Our App</h1>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Lastname</th>
+						<th>Email</th>
+						<th>Password</th>
+						<th>Action</th>
+						<th>&nbsp;</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr >
+						<td><input class="form-control" ng-model="user.name"></td>
+						<td><input class="form-control" ng-model="user.lastname"></td>
+						<td><input class="form-control" ng-model="user.email"></td>
+						<td><input class="form-control" ng-model="user.password"></td>
+						<td><button class="btn btn-primary" ng-click="addUser()">Add User</button></td>
+						<td><button class="btn btn-info" ng-click="update()">update</button></td>
+						<td><button class="btn btn-info" ng-click="deselect()">Clear</button></td>
+					</tr>
+					<tr ng-repeat="user in users">
+						<td>{{user.name}}</td>
+						<td>{{user.lastname}}</td>
+						<td>{{user.email}}</td>
+						<td>{{user.password}}</td>
+						<td><button class="btn btn-danger" ng-click="remove(user.id)">Remove</button></td>
+						<td><button class="btn btn-warning" ng-click="edit(user.id)">Edit</button></td>
+						<td>&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="row login" style="{{style_2}}">
+			<h1><span class="fa fa-sign-in"></span> Login</h1>
+		        <div class="form-group">
+		            <label>Email</label>
+		            <input type="email" class="form-control" ng-model="login.email">
+		        </div>
+		        <div class="form-group">
+		            <label>Password</label>
+		            <input type="password" class="form-control" ng-model="login.password">
+		        </div>
+		        <button class="btn btn-warning btn-lg" ng-click="login(login.email)">Login</button>
+		    <hr>
+		    <p>Need an account? <a href="#">Signup</a></p>
+		</div>
 	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>	
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
-<script src="controllers/controller.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-route.min.js"></script>
+<script src="controller.js" ></script>
 </body>
 </html>
