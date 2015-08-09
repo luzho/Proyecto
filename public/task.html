@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html ng-app='TaskApp'>
-<head>
+<head >
+	<script>
+		window.onload = function(event) {
+		   	event.stopPropagation(true);
+		   	userid = parseInt(sessionStorage.getItem('id'),10); 
+			if(isNaN(userid)){
+				window.location="/";
+			}else{
+				event.stopPropagation(false);
+			}
+		};
+	</script>
 	<link rel="stylesheet" href="bootstrap-3.3.5-dist/bootstrap-3.3.5-dist/css/bootstrap.css">
     <link rel="stylesheet" href="bootstrap-3.3.5-dist/bootstrap-3.3.5-dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="bootstrap-3.3.5-dist/topbar.css">
 	<title>Diary</title>
 </head>
-<body>
+<body id="body" style="display:none">
 
 	<div class="container" ng-controller="TaskCtrl">
 		<div class="row">
@@ -25,7 +36,7 @@
 			    <!-- Collect the nav links, forms, and other content for toggling -->
 			    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			      		<ul class="nav navbar-nav navbar-right">
-			        		<li><a href="#">Logout</a></li>
+			        		<li><a href="/" ng-click="logout">Logout</a></li>
 			      		</ul>
 			    	</div><!-- /.navbar-collapse -->
 		  		</div><!-- /.container-fluid -->
@@ -34,7 +45,12 @@
 		<br><br>
 		<div class="row task">
 		<hr>
-			<div ng-bind-html="message"></div>
+			<div class="row">
+				<div ng-bind-html="message" class="col-xs-6"></div>
+				<div class="col-xs-6">
+					
+				</div>
+			</div>
 		<hr>
 			<table id="table" class="table" >
 				<thead>
@@ -64,7 +80,7 @@
 						<td>{{task.description}}</td>
 						<td>{{task.date_create.split('T')[0]}}</td>
 						<td>{{task.date_planned.split('T')[0]}}</td>
-						<td>{{task.type}}</td>
+						<td>{{types[task.type-1].type}}</td>
 						<td><button class="btn btn-danger" ng-click="remove(task.id)">&nbsp;Remove</button></td>
 						<td><button class="btn btn-warning" ng-click="edit(task.id)">&nbsp;&nbsp;&nbsp;Edit&nbsp;&nbsp;</button></td>
 						<td>&nbsp;</td>

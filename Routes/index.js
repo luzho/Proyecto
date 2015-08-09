@@ -1,8 +1,7 @@
-var UserModel = require('../Models/User');
-var passwordHash = require('password-hash');
-var bcrypt = require('bcryptjs');
-var salt = bcrypt.genSaltSync(10);
-var TaskModel = require('../Models/Task');
+var UserModel 	= require('../Models/User');
+var bcrypt 		= require('bcryptjs');
+var salt 		= bcrypt.genSaltSync(10);
+var TaskModel	= require('../Models/Task');
 
 module.exports = function(app){
 
@@ -127,6 +126,7 @@ module.exports = function(app){
 		{
 			if (typeof data !== 'undefined' && data.length > 0) 
 				{
+					req.session.id = data.id;
 					res.json(200,data);
 				}
 				else

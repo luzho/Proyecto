@@ -8,16 +8,15 @@ var errorhandler= require('errorhandler');
 var users		= require('./Routes/users');
 var tasks		= require('./Routes/tasks');
 var app			= express();
-var flash 		= require('connect-flash');
+var jwt     = require('jsonwebtoken');
 var passport	= require('passport');
 var morgan      = require('morgan');
 var cookieParser= require('cookie-parser');
 var session     = require('express-session');
 
 app.use(express.static(__dirname + '/public'));
-app.use(flash());
 app.use(cookieParser());
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' }));
+app.use(session({ secret: '1234567890QWERTY' }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: true }));

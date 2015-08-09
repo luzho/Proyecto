@@ -4,7 +4,7 @@ var taskApp = angular.module('TaskApp',[]);
 var signApp = angular.module('SignApp',[]);
 
 myApp.controller('AppCtrl',['$window','$scope','$http',function ($window,$scope,$http){
-	
+	$scope.styles = "display:none";
 	var refresh = function(){
 		$http.get('/users').success(function (response){
 			console.log("I got the data i request");
@@ -52,7 +52,7 @@ myApp.controller('AppCtrl',['$window','$scope','$http',function ($window,$scope,
 }]);
 
 loginApp.controller('LoginCtrl',['$sce','$window','$scope','$http',function ($sce,$window,$scope,$http){
-	localStorage.clear();
+	sessionStorage.clear();
 	$scope.login = "";
 	$scope.login = function() {
 		var params = {
@@ -62,7 +62,7 @@ loginApp.controller('LoginCtrl',['$sce','$window','$scope','$http',function ($sc
 		console.log(params);
 		if(params.email != undefined && params.password != null){
 			$http.post('/users/login',params).success(function (response){
-				localStorage.setItem('id',response[0].id);
+				sessionStorage.setItem('id',response[0].id);
 				$window.location = "task.html";
 			});
 		}else{
@@ -77,7 +77,7 @@ loginApp.controller('LoginCtrl',['$sce','$window','$scope','$http',function ($sc
 }]);
 
 signApp.controller('SignCtrl',['$sce','$window','$scope','$http',function ($sce,$window,$scope,$http){
-	localStorage.clear();
+	sessionStorage.clear();
 	$scope.sign = "";
 	$scope.signup = function() {
 		var params = {
@@ -104,18 +104,22 @@ signApp.controller('SignCtrl',['$sce','$window','$scope','$http',function ($sce,
 }]);
 
 taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,$window,$scope,$http){
-	userid = parseInt(localStorage.getItem('id'),10); 
+	userid = parseInt(sessionStorage.getItem('id'),10); 
+
 	$scope.types = [{id: 1,type: 'En la manana'},{id: 2,type: 'En la Tarde'},
 		{id: 3, type: 'En la noche'},{id: 4,type: 'Manana'},{id: 5,type: 'Pasado Manana'},
 		{id: 6, type: 'El proximo fin de Semana'},{id: 7,type: 'La semana que viene'},
 		{id: 8, type: 'Sin fecha'}];
 
 	var refresh = function(){
-		$http.get('/tasks/users/' + userid).success(function (response){
-			console.log("I got the data i request");
-			$scope.tasks = response;
-			$scope.task = "";
-		});
+		if(!isNaN(userid)){
+			document.getElementById("body").style = "";
+			$http.get('/tasks/users/' + userid).success(function (response){
+				console.log("I got the data i request");
+				$scope.tasks = response;
+				$scope.task = "";
+			});
+		}
 	};
 
 	refresh();
@@ -125,12 +129,18 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 		if($scope.task.type != undefined){
 			$scope.task.type = $scope.task.type.id;
 			console.log($scope.task);
-			$http.post('/tasks/' + userid,$scope.task).success(function (response){
-			console.log(response);
-			refresh();
-			if($scope.task.description != null && ($scope.task.date_create == undefined || $scope.task.date_planned == undefined) )
+			if($scope.task.date_create == undefined){
+				$scope.task.date_create = null;
+				if($scope.task.date_planned == undefined)
+					$scope.task.date_planned = null;
+			}else if($scope.task.date_planned == undefined){
+				$scope.task.date_planned == null;
+			}
 				$scope.message = $sce.trustAsHtml('<div class="alert alert-warning">Remember edit the task and put a valid date.</div>');
-			});
+				$http.post('/tasks/' + userid,$scope.task).success(function (response){
+					console.log(response);
+					refresh();			
+				});
 		}else{
 			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Type for the task.</div>');
 		}
@@ -156,11 +166,22 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 
 	$scope.update = function() {
 		console.log($scope.task);
-		$scope.task.type = $scope.task.type.id;
-		if($scope.task.date_planned != undefined && $scope.task.date_create != undefined){
-			$http.put('/tasks', $scope.task).success(function (response){
-				refresh();
-			});
+		if($scope.task.type != undefined){
+			$scope.task.type = $scope.task.type.id;
+			if($scope.task.date_create == undefined){
+				$scope.task.date_create = null;
+				if($scope.task.date_planned == undefined){
+					$scope.task.date_planned = null;
+					$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Date Error. Not found or Incorrect</div>');
+				}
+			}else if($scope.task.date_planned == undefined){
+				$scope.task.date_planned == null;
+				$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Date Error. Not found or Incorrect</div>');
+			}
+			
+				$http.put('/tasks', $scope.task).success(function (response){
+					refresh();
+				});
 		}else{
 			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Type for the task.</div>');
 		}
@@ -170,6 +191,11 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 		$scope.task = "";
 		$scope.task.date_create = "";
 		$scope.message = "";
+	};
+
+	$scope.logout = function(){
+		sessionStorage.clear();
+		window.location = '/';
 	};
 
 }]);
