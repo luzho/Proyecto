@@ -106,10 +106,13 @@ signApp.controller('SignCtrl',['$sce','$window','$scope','$http',function ($sce,
 taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,$window,$scope,$http){
 	userid = parseInt(sessionStorage.getItem('id'),10); 
 
-	$scope.types = [{id: 1,type: 'En la manana'},{id: 2,type: 'En la Tarde'},
-		{id: 3, type: 'En la noche'},{id: 4,type: 'Manana'},{id: 5,type: 'Pasado Manana'},
-		{id: 6, type: 'El proximo fin de Semana'},{id: 7,type: 'La semana que viene'},
-		{id: 8, type: 'Sin fecha'}];
+	$scope.reminders = [{id: 1,reminder: 'Morning'},{id: 2,reminder: 'Afternoon'},
+		{id: 3, reminder: 'Night'},{id: 4,reminder: 'Tomorrow'},{id: 5,reminder: 'After Tomorrow'},
+		{id: 6, reminder: 'Next Weekend'},{id: 7,reminder: 'Next Week'},
+		{id: 8, reminder: 'No Date'}];
+
+	$scope.types = [{id: 1,type: 'Work'},{id: 2,type: 'Personal'},
+		{id: 3, type: 'Extra'}];
 
 	var refresh = function(){
 		if(!isNaN(userid)){
@@ -124,23 +127,32 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 
 	refresh();
 
+	$scope.allow = function() {
+		refresh();
+	}
+
 	$scope.addTask = function(){
 		console.log($scope.task);
 		if($scope.task.type != undefined){
-			$scope.task.type = $scope.task.type.id;
-			console.log($scope.task);
-			if($scope.task.date_create == undefined){
-				$scope.task.date_create = null;
-				if($scope.task.date_planned == undefined)
-					$scope.task.date_planned = null;
-			}else if($scope.task.date_planned == undefined){
-				$scope.task.date_planned == null;
+			if($scope.task.reminder != undefined){
+				$scope.task.type = $scope.task.type.id;
+				$scope.task.reminder = $scope.task.reminder.id;
+				console.log($scope.task);
+				if($scope.task.date_create == undefined){
+					$scope.task.date_create = null;
+					if($scope.task.date_planned == undefined)
+						$scope.task.date_planned = null;
+				}else if($scope.task.date_planned == undefined){
+					$scope.task.date_planned == null;
+				}
+					$scope.message = $sce.trustAsHtml('<div class="alert alert-warning">Remember edit the task and put a valid date.</div>');
+					$http.post('/tasks/' + userid,$scope.task).success(function (response){
+						console.log(response);
+						refresh();			
+					});
+			}else{
+				$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Reminder for the task.</div>');
 			}
-				$scope.message = $sce.trustAsHtml('<div class="alert alert-warning">Remember edit the task and put a valid date.</div>');
-				$http.post('/tasks/' + userid,$scope.task).success(function (response){
-					console.log(response);
-					refresh();			
-				});
 		}else{
 			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Type for the task.</div>');
 		}
@@ -167,21 +179,30 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 	$scope.update = function() {
 		console.log($scope.task);
 		if($scope.task.type != undefined){
-			$scope.task.type = $scope.task.type.id;
-			if($scope.task.date_create == undefined){
-				$scope.task.date_create = null;
-				if($scope.task.date_planned == undefined){
-					$scope.task.date_planned = null;
+			if($scope.task.reminder != undefined){
+				$scope.task.type = $scope.task.type.id;
+				$scope.task.reminder = $scope.task.reminder.id;
+				if($scope.task.date_create == undefined){
+					$scope.task.date_create = null;
+					if($scope.task.date_planned == undefined){
+						$scope.task.date_planned = null;
+						$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Date Error. Not found or Incorrect</div>');
+					}else{
+						$scope.task.priority = 1;
+					}
+				}else if($scope.task.date_planned == undefined){
+					$scope.task.date_planned == null;
 					$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Date Error. Not found or Incorrect</div>');
+				}else{
+					$scope.task.priority = 1;
 				}
-			}else if($scope.task.date_planned == undefined){
-				$scope.task.date_planned == null;
-				$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Date Error. Not found or Incorrect</div>');
+				
+					$http.put('/tasks', $scope.task).success(function (response){
+						refresh();
+					});
+			}else{
+				$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Reminder for the task.</div>');
 			}
-			
-				$http.put('/tasks', $scope.task).success(function (response){
-					refresh();
-				});
 		}else{
 			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Please, select a Type for the task.</div>');
 		}
@@ -196,6 +217,114 @@ taskApp.controller('TaskCtrl',['$sce','$window','$scope','$http',function ($sce,
 	$scope.logout = function(){
 		sessionStorage.clear();
 		window.location = '/';
+	};
+
+	$scope.filter = function(){
+		var date = null;
+		var type = 0;
+		var reminder = 0;
+		console.log($scope.filters);
+		if($scope.filters != undefined){
+				//$scope.message = $sce.trustAsHtml('<div class="alert alert-warning">Put a valid date to filter.</div>');
+				if($scope.filters.date != undefined){
+					date = $scope.filters.date;
+				}
+				if($scope.filters.type != undefined){
+					type = $scope.filters.type.id;
+				}
+				if($scope.filters.reminder != undefined){
+					reminder = $scope.filters.reminder.id;
+				}
+				console.log(date+' '+type+' '+reminder);
+				var obj = [];
+				var i;
+				$http.get('/tasks/users/' + userid).success(function (response){
+					
+					if(date != null || type != 0 || reminder != 0){
+							for (i=0; i<Object.keys(response).length; i++) {
+								if(response[i].date_planned == null){
+			  						if(date == null){
+				  						if(type != 0){
+				  							if(type == response[i].type){
+				  								if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  							}else{
+				  								obj.push(response[i]);
+				  							}
+				  						}else{
+				  							if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  						}
+				  					}
+			  					}else if(date != null && date == response[i].date_planned.split('T')[0]){
+			  						
+				  						if(type != 0){
+				  							if(type == response[i].type){
+				  								if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  							}else{
+				  								obj.push(response[i]);
+				  							}
+				  						}else{
+				  							if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  						}
+			  						
+			  					}else{
+			  						if(type != 0){
+				  							if(type == response[i].type){
+				  								if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  							}else{
+				  								obj.push(response[i]);
+				  							}
+				  						}else{
+				  							if(reminder != 0){
+				  									if(reminder == response[i].reminder){
+				  										obj.push(response[i]);
+				  									}
+				  								}else{
+				  									obj.push(response[i]);
+				  								}
+				  						}
+			  					}
+							}
+						console.log(obj);
+						$scope.tasks = obj;
+						$scope.task = "";
+					}else{
+						$scope.tasks = response;
+						$scope.task = "";
+					}
+				});
+		}else{
+			$scope.message = $sce.trustAsHtml('<div class="alert alert-danger"><strong>¡Error!</strong> Nothing to filter.</div>');
+		}	
 	};
 
 }]);

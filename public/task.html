@@ -48,7 +48,11 @@
 			<div class="row">
 				<div ng-bind-html="message" class="col-xs-6"></div>
 				<div class="col-xs-6">
-					
+					<input class="form-control" ng-model="filters.date" required placeholder="Filter By Date" ng-pattern='/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/'>
+					<select class="form-control" ng-model="filters.type" ng-options="type.type for type in types"><option value="">Filter By Type</option></select>
+					<select class="form-control" ng-model="filters.reminder" ng-options="reminder.reminder for reminder in reminders"><option value="">Filter By Reminder</option></select>
+					<button class="btn btn-warning col-xs-2 col-sm-offset-7" ng-click="allow()">All</button>
+					<button class="btn btn-warning col-xs-2 col-sm-offset-1" ng-click="filter()">Filter</button>
 				</div>
 			</div>
 		<hr>
@@ -59,7 +63,8 @@
 						<th>Date Create</th>
 						<th>Date Planned</th>
 						<th>Type</th>
-						<th>Action</th>
+						<th>Reminder</th>
+						<th>&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
 						<th>&nbsp;</th>
 						<th>&nbsp;</th>
 					</tr>
@@ -72,6 +77,9 @@
 						<td><select class="form-control" ng-model="task.type" ng-options="type.type for type in types">
 							<option value=""></option>
 						</select></td>
+						<td><select class="form-control" ng-model="task.reminder" ng-options="reminder.reminder for reminder in reminders">
+							<option value=""></option>
+						</select></td>
 						<td><button class="btn btn-primary" ng-click="addTask()">Add Task</button></td>
 						<td><button class="btn btn-info" ng-click="update()">update</button></td>
 						<td><button class="btn btn-info" ng-click="deselect()">Clear</button></td>
@@ -81,6 +89,7 @@
 						<td>{{task.date_create.split('T')[0]}}</td>
 						<td>{{task.date_planned.split('T')[0]}}</td>
 						<td>{{types[task.type-1].type}}</td>
+						<td>{{reminders[task.reminder-1].reminder}}</td>
 						<td><button class="btn btn-danger" ng-click="remove(task.id)">&nbsp;Remove</button></td>
 						<td><button class="btn btn-warning" ng-click="edit(task.id)">&nbsp;&nbsp;&nbsp;Edit&nbsp;&nbsp;</button></td>
 						<td>&nbsp;</td>
