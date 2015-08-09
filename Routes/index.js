@@ -5,6 +5,15 @@ var TaskModel	= require('../Models/Task');
 
 module.exports = function(app){
 
+	function isEmpty(myObject) {
+	    for(var key in myObject) {
+	        if (myObject.hasOwnProperty(key)) {
+	            return false;
+	        }
+	    }
+	return true;
+	}
+
 	//Route for all task
 	app.get("/tasks",function(req,res){
 		TaskModel.getTasks(function(error,data){
@@ -59,6 +68,12 @@ module.exports = function(app){
 
 	//Create Task
 	app.post("/tasks/:users_id",function(req,res){
+		var p = 0;
+		if (req.body.date_planned)
+		{
+			p = 1;
+		}
+
 		var taskData =
 		{
 			id : null,
@@ -66,8 +81,11 @@ module.exports = function(app){
 			description : req.body.description,
 			date_create : req.body.date_create,
 			date_planned : req.body.date_planned,
-			type : req.body.type
+			type : req.body.type,
+			priority : p,
+			reminder : req.body.reminder
 		};
+
 		console.log(taskData);
 		TaskModel.insertTask(taskData,function(error,data){
 			if (data && data.insertId) {
@@ -86,7 +104,9 @@ module.exports = function(app){
 						description:req.param('description'),
 						date_create:req.param('date_create'),
 						date_planned:req.param('date_planned'),
-						type:req.param('type')
+						type:req.param('type'),
+						priority:req.param('priority'),
+						reminder:req.param('reminder')
 		};
 		console.log(taskData);
 		TaskModel.updateTask(taskData,function(error,data)

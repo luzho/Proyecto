@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 	date_create		DATE,
 	date_planned	DATE,
 	type			INT(1),
+	priority		INT(1),
+	reminder		INT(1),
 	PRIMARY KEY (id),
 	KEY fk_users1_idx (users_id)
 );

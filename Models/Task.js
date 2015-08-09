@@ -33,7 +33,7 @@ taskModel.getUTasks = function(id,callback)
 {
 	if (connection) 
 	{
-		var sql = 'SELECT * FROM tasks WHERE users_id = ' + connection.escape(id);
+		var sql = 'SELECT * FROM tasks WHERE users_id = ' + connection.escape(id) + 'ORDER BY priority';
 		connection.query(sql, function(error, row)
 		{
 			if(error)
@@ -98,7 +98,7 @@ taskModel.updateTask = function(taskData, callback)
 		var sql = 'UPDATE tasks SET description = ' + connection.escape(taskData.description) + ',' + 
 		'date_create = ' + connection.escape(taskData.date_create) + ',' +
 		'date_planned = ' + connection.escape(taskData.date_planned) + ',type = ' + connection.escape(taskData.type) +
-		' WHERE id = ' + taskData.id;
+		',priority = ' + connection.escape(taskData.priority) + ',reminder = ' + connection.escape(taskData.reminder) + ' WHERE id = ' + taskData.id;
 		 console.log(sql);
 		connection.query(sql, function(error, result)
 		{
