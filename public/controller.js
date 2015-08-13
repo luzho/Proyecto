@@ -74,6 +74,22 @@ loginApp.controller('LoginCtrl',['$sce','$window','$scope','$http',function ($sc
 		$window.location = "signup.html";
 	};
 
+	$scope.email = function() {
+		var params = {
+			email : $scope.login.email,
+			password : $scope.login.password
+		};
+		console.log(params);
+		if(params.email != undefined){
+			$http.get('/email',params).success(function (response){
+				console.log("hell yeah");
+			});
+			$scope.message = $sce.trustAsHtml('<div class="alert alert-success"><strong>¡Send Email!</strong></div>');
+		}else{
+			$scope.message = $sce.trustAsHtml('<div class="alert alert-warning"><strong>If you want to recover your password please enter your email and then give the button</strong></div>');
+		}
+	};
+
 }]);
 
 signApp.controller('SignCtrl',['$sce','$window','$scope','$http',function ($sce,$window,$scope,$http){

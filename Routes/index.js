@@ -2,6 +2,7 @@ var UserModel 	= require('../Models/User');
 var bcrypt 		= require('bcryptjs');
 var salt 		= bcrypt.genSaltSync(10);
 var TaskModel	= require('../Models/Task');
+var mandrill = require('node-mandrill')('6B_H9pFypH7Zq6erNCou-w');
 
 module.exports = function(app){
 
@@ -13,6 +14,25 @@ module.exports = function(app){
 	    }
 	return true;
 	}
+
+	//Send email
+	app.get("/email",function(req,res){
+		mandrill('/messages/send', {
+		    message: {
+		        to: [{email: 'carluzhozz@gmail.com', name: 'Carlos'}],
+		        from_email: 'noreply@ati.com',
+		        subject: "Hey, what's up?",
+		        text: "Hello, I sent this message using mandrill."
+		    }
+		}, function(error, response)
+		{
+		    //uh oh, there was an error
+		    if (error) console.log( JSON.stringify(error) );
+
+		    //everything's good, lets see what mandrill said
+		    else console.log("response");
+		});
+	});
 
 	//Route for all task
 	app.get("/tasks",function(req,res){
